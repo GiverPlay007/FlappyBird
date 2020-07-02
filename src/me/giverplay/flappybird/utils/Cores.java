@@ -12,4 +12,5 @@ public class Cores
 	
 	public static final int LIGHT_EXCLUDE = 0xFFFFFFFF;
 	public static final int LIGHT_REPLACE = 0x000000;
+	public static final int SKY = 0xFF2eccd1;
 }

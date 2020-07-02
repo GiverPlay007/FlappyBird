@@ -22,27 +22,7 @@ public class Listeners implements KeyListener
 		{
 			if(event.getKeyCode() == KeyEvent.VK_SPACE)
 			{
-				game.getPlayer().handleJump();
-			}
-			
-			if(event.getKeyCode() == KeyEvent.VK_RIGHT || event.getKeyCode() == KeyEvent.VK_D)
-			{
-				game.getPlayer().setWalkingRight(true);
-			} 
-			
-			if(event.getKeyCode() == KeyEvent.VK_LEFT || event.getKeyCode() == KeyEvent.VK_A)
-			{
-				game.getPlayer().setWalkingLeft(true);
-			}
-			
-			if(event.getKeyCode() == KeyEvent.VK_UP || event.getKeyCode() == KeyEvent.VK_W)
-			{
-				game.getPlayer().setWalkingUp(true);
-			} 
-			
-			if(event.getKeyCode() == KeyEvent.VK_DOWN || event.getKeyCode() == KeyEvent.VK_S)
-			{
-				game.getPlayer().setWalkingDown(true);
+				game.getPlayer().handleJump(true);
 			}
 		}
 		else
@@ -57,24 +37,9 @@ public class Listeners implements KeyListener
 	@Override
 	public void keyReleased(KeyEvent event)
 	{
-		if(event.getKeyCode() == KeyEvent.VK_RIGHT || event.getKeyCode() == KeyEvent.VK_D)
+		if(event.getKeyCode() == KeyEvent.VK_SPACE)
 		{
-			game.getPlayer().setWalkingRight(false);
-		} 
-		
-		if(event.getKeyCode() == KeyEvent.VK_LEFT || event.getKeyCode() == KeyEvent.VK_A)
-		{
-			game.getPlayer().setWalkingLeft(false);
-		}
-		
-		if(event.getKeyCode() == KeyEvent.VK_UP || event.getKeyCode() == KeyEvent.VK_W)
-		{
-			game.getPlayer().setWalkingUp(false);
-		}
-		
-		if(event.getKeyCode() == KeyEvent.VK_DOWN || event.getKeyCode() == KeyEvent.VK_S)
-		{
-			game.getPlayer().setWalkingDown(false);
+			game.getPlayer().handleJump(false);
 		}
 	}
 

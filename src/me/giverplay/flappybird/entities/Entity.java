@@ -1,44 +1,19 @@
 package me.giverplay.flappybird.entities;
 
-import static me.giverplay.flappybird.world.World.TILE_SIZE;
+import static me.giverplay.flappybird.Game.TILE_SIZE;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Random;
 
 import me.giverplay.flappybird.Game;
-import me.giverplay.flappybird.algorithms.Node;
-import me.giverplay.flappybird.algorithms.Vector2i;
-import me.giverplay.flappybird.world.World;
 
 public class Entity
 {
-	public static final BufferedImage[] SPRITE_PLAYER;
-	public static final BufferedImage[] SPRITE_GHOST;
-	public static final BufferedImage[] SPRITE_FRUTA;
+	public static final BufferedImage SPRITE_PLAYER = Game.getGame().getSpritesheet().getSprite(0, 0, TILE_SIZE, TILE_SIZE);
 	
-	public static final BufferedImage GHOST = Game.getGame().getSpritesheet().getSprite(TILE_SIZE * 2, 0, TILE_SIZE, TILE_SIZE);
-	
-	static
-	{
-		SPRITE_GHOST = new BufferedImage[4];
-		SPRITE_FRUTA = new BufferedImage[4];
-		SPRITE_PLAYER = new BufferedImage[4];
-		
-		for(int i = 0; i < 4; i++)
-		{
-			SPRITE_PLAYER[i] = Game.getGame().getSpritesheet().getSprite(i * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE);
-			SPRITE_FRUTA[i] = Game.getGame().getSpritesheet().getSprite(i * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-			SPRITE_GHOST[i] = Game.getGame().getSpritesheet().getSprite(i * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-		}
-	}
-	
-	private static Game game = Game.getGame();
-	
-	protected List<Node> path;
 	protected static Random random = new Random();
 	
 	protected double x;
@@ -71,11 +46,6 @@ public class Entity
 	public void render(Graphics g)
 	{
 		g.drawImage(sprite, getX(), getY(), null);
-	}
-	
-	public void destroy()
-	{
-		game.getEntities().remove(this);
 	}
 	
 	public void setX(int x)
@@ -131,38 +101,6 @@ public class Entity
 	public BufferedImage getSprite()
 	{
 		return this.sprite;
-	}
-	
-	public void followPath(List<Node> path)
-	{
-		if(path != null)
-		{
-			if(path.size() > 0)
-			{
-				Vector2i target = path.get(path.size() - 1).getTile();
-				
-				if(x < target.x * World.TILE_SIZE)
-				{
-					x++;
-				}
-				else if(x > target.x * World.TILE_SIZE)
-				{
-					x--;
-				}
-				
-				if(y < target.y * World.TILE_SIZE)
-				{
-					y++;
-				}
-				else if(y > target.y * World.TILE_SIZE)
-				{
-					y--;
-				}
-				
-				if(x == target.x * World.TILE_SIZE && y == target.y * World.TILE_SIZE)
-					path.remove(path.size() -1);
-			}
-		}
 	}
 	
 	public double pointDistance(int x1, int y1, int x2, int y2)

@@ -14,14 +14,14 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import me.giverplay.flappybird.entities.Enemy;
 import me.giverplay.flappybird.entities.Entity;
 import me.giverplay.flappybird.entities.Player;
 import me.giverplay.flappybird.events.Listeners;
 import me.giverplay.flappybird.graphics.FontUtils;
 import me.giverplay.flappybird.graphics.Spritesheet;
 import me.giverplay.flappybird.graphics.UI;
-import me.giverplay.flappybird.world.World;
+import me.giverplay.flappybird.utils.Cores;
+import me.giverplay.flappybird.world.TubeGenerator;
 
 public class Game extends Canvas implements Runnable
 {
@@ -30,15 +30,15 @@ public class Game extends Canvas implements Runnable
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 240;
 	public static final int SCALE = 2;
-	
-	private List<Entity> entities;
-	private List<Entity> frutas;
+	public static final int TILE_SIZE = 16;
 	
 	private static Game game;
 	private static int FPS = 0;
 	
+	private List<Entity> entities = new ArrayList<>();
+	
+	private TubeGenerator generator;
 	private Spritesheet sprite;
-	private World world;
 	private Player player;
 	private UI ui;
 	
@@ -53,6 +53,8 @@ public class Game extends Canvas implements Runnable
 	
 	private int gameOverFrames = 0;
 	private int maxGameOverFrames = 30;
+	private int score = 0;
+	private int record = 0;
 	
 	public static Game getGame()
 	{
@@ -76,7 +78,7 @@ public class Game extends Canvas implements Runnable
 	
 	private void setupFrame()
 	{
-		frame = new JFrame("Game 02 - Pacman Clone");
+		frame = new JFrame("Game 03 - Flappy Bird Clone");
 		frame.add(this);
 		frame.setResizable(false);
 		frame.setUndecorated(false);
@@ -91,16 +93,14 @@ public class Game extends Canvas implements Runnable
 	{
 		game = this;
 		
-		entities = new ArrayList<Entity>();
-		frutas = new ArrayList<>();
-		
 		sprite = new Spritesheet("/Spritesheet.png");
-		player = new Player(1, 1, 16, 16);
-		world = new World("/World.png");
+		player = new Player(WIDTH / 2 - 8, 100, 16, 16);
+		generator = new TubeGenerator(this);
+		
+		entities.add(player);
 		
 		ui = new UI();
 		
-		entities.add(player);
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_BGR);
 		
 		ganhou = false;
@@ -185,13 +185,10 @@ public class Game extends Canvas implements Runnable
 	{
 		if(!morreu && !ganhou)
 		{
-			for(int i = 0; i < entities.size(); i++) entities.get(i).tick();
-			for(int i = 0; i < frutas.size(); i++) frutas.get(i).tick();
+			generator.tick();
 			
-			if(frutas.size() == 0)
-			{
-				ganhou = true;
-			}
+			for(int i = 0; i < entities.size(); i++)
+				entities.get(i).tick();
 		}
 	}
 	
@@ -207,17 +204,15 @@ public class Game extends Canvas implements Runnable
 		
 		Graphics g = image.getGraphics();
 		
-		g.setColor(new Color(0, 0, 0));
+		g.setColor(new Color(Cores.SKY));
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 		
 		/** Renderiaza��o do Jogo **/
 		
-		world.render(g);
+		Collections.sort(entities, Entity.sortDepth);
 		
-		Collections.sort(entities, Enemy.sortDepth);
-		
-		for(int i = 0; i < frutas.size(); i++) frutas.get(i).render(g);
-		for(int i = 0; i < entities.size(); i++) entities.get(i).render(g);
+		for(int i = 0; i < entities.size(); i++)
+			entities.get(i).render(g);
 		
 		/******/
 		
@@ -282,11 +277,6 @@ public class Game extends Canvas implements Runnable
 		return this.sprite;
 	}
 	
-	public World getWorld()
-	{
-		return this.world;
-	}
-	
 	public List<Entity> getEntities()
 	{
 		return this.entities;
@@ -301,14 +291,19 @@ public class Game extends Canvas implements Runnable
 	{
 		return this.ganhou;
 	}
-	
-	public List<Entity> getFruits()
-	{
-		return this.frutas;
-	}
 
 	public void matar()
 	{
 		this.morreu = true;
+	}
+	
+	public int getScore()
+	{
+		return this.score;
+	}
+	
+	public int getRecord()
+	{
+		return this.record;
 	}
 }
