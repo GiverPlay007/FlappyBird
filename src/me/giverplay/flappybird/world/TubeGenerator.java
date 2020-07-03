@@ -21,15 +21,19 @@ public class TubeGenerator
 	
 	public void tick()
 	{
+		if(game.getPlayer().isDead())
+			return;
+		
 		time++;
 		
 		if(time >= maxTime)
 		{
 			time = 0;
 			
-			int height = random.nextInt(game.HEIGHT / 2 + game.HEIGHT / 4 - 40) + 40;
+			int height = random.nextInt((Game.HEIGHT - 12) / 2 - 40) + 40;
 			
-			game.getEntities().add(new Tube(game.WIDTH, 0, 1, height, true));
+			game.getEntities().add(new Tube(Game.WIDTH, 0, 1, height, true));
+			game.getEntities().add(new Tube(Game.WIDTH, height + 70, 1, (Game.HEIGHT - 12) - (height + 70), false));
 		}
 	}
 }

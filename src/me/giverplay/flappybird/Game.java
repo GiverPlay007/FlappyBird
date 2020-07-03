@@ -10,7 +10,6 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -27,15 +26,15 @@ public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
 	
-	public static final int WIDTH = 320;
-	public static final int HEIGHT = 240;
+	public static final int WIDTH = 340;
+	public static final int HEIGHT = 264;
 	public static final int SCALE = 2;
 	public static final int TILE_SIZE = 16;
 	
 	private static Game game;
 	private static int FPS = 0;
 	
-	private List<Entity> entities = new ArrayList<>();
+	private ArrayList<Entity> entities = new ArrayList<>();
 	
 	private TubeGenerator generator;
 	private Spritesheet sprite;
@@ -131,7 +130,9 @@ public class Game extends Canvas implements Runnable
 	
 	public synchronized void restart()
 	{
+		entities.clear();
 		setupAssets();
+		score = 0;
 	}
 	
 	public static void handleRestart()
@@ -277,7 +278,7 @@ public class Game extends Canvas implements Runnable
 		return this.sprite;
 	}
 	
-	public List<Entity> getEntities()
+	public ArrayList<Entity> getEntities()
 	{
 		return this.entities;
 	}
@@ -305,5 +306,10 @@ public class Game extends Canvas implements Runnable
 	public int getRecord()
 	{
 		return this.record;
+	}
+
+	public void addScore(int i)
+	{
+		this.score++;
 	}
 }

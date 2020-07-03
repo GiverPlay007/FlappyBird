@@ -13,6 +13,7 @@ import me.giverplay.flappybird.Game;
 public class Entity
 {
 	public static final BufferedImage SPRITE_PLAYER = Game.getGame().getSpritesheet().getSprite(0, 0, TILE_SIZE, TILE_SIZE);
+	public static final BufferedImage SPRITE_WINGS = Game.getGame().getSpritesheet().getSprite(0, 16, 8, 8);
 	
 	protected static Random random = new Random();
 	
@@ -108,12 +109,17 @@ public class Entity
 		return Math.sqrt((x2 - x1) * (x2 - x1) + ((y2 - y1) * (y2 - y1)));
 	}
 	
-	public static boolean isCollifingEntity(Entity e1, Entity e2)
+	public static boolean isCollifingPlayer(Entity e1, Player e2)
 	{
 		Rectangle e1m = new Rectangle(e1.getX(), e1.getY(), e1.getWidth(), e1.getHeight());
-		Rectangle e2m = new Rectangle(e2.getX(), e2.getY(), e2.getWidth(), e2.getHeight());
+		Rectangle e2m = new Rectangle(e2.getX(), e2.getY() - 2, e2.getWidth() + 2, e2.getHeight());
 		
 		return e1m.intersects(e2m);
+	}
+	
+	public void destroy()
+	{
+		Game.getGame().getEntities().remove(this);
 	}
 	
 	public static Comparator<Entity> sortDepth = new Comparator<Entity>()
