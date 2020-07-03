@@ -3,7 +3,6 @@ package me.giverplay.flappybird.entities;
 import java.awt.Graphics;
 
 import me.giverplay.flappybird.Game;
-import me.giverplay.flappybird.graphics.GraphicsUtils;
 
 public class Player extends Entity
 {	
@@ -17,8 +16,8 @@ public class Player extends Entity
 	private int subindoFrames = 0;
 	private int maxSubindoFrames = 5;
 	private int speed = 2;
-	private int wingsRotation = 0;
-	private int maxWingsFrames = 45;
+	private int wingsHeight = 5;
+	private int maxWingsFrames = 12;
 	
 	public Player(int x, int y, int width, int height)
 	{
@@ -52,23 +51,21 @@ public class Player extends Entity
 				}
 				else
 				{
-					y -= speed + 1;
-					
-					if(y <= 0)
-						handleDeath();
+					if(y > 0)
+						y -= speed + 1;
 				}
 			}
 			else 
 			{
 				y += speed;
 				
-				if(y >= Game.HEIGHT - 26)
+				if(y >= Game.HEIGHT - Game.FLOOR_OFFSET)
 					handleDeath();
 			}
 		}
 		else
 		{		
-			if(y >= Game.HEIGHT - 26 || y + 4 >= Game.HEIGHT - 26)
+			if(y >= Game.HEIGHT - Game.FLOOR_OFFSET || y + 4 >= Game.HEIGHT - Game.FLOOR_OFFSET)
 			{	
 				game.matar();
 				return;
@@ -82,24 +79,15 @@ public class Player extends Entity
 	@Override
 	public void render(Graphics g)
 	{
-		g.drawImage(Entity.SPRITE_PLAYER, getX(), getY(), null);
+		wingsHeight += closingWings ? -1 : 1;
 		
-		Graphics wings = Entity.SPRITE_PLAYER.getGraphics();
-		
-		if(wings == null)
-			wings = Entity.SPRITE_PLAYER.createGraphics();
-		
-		// Recomanda-se fazer isso no Tick, mas eu sou a lei
-		wingsRotation += closingWings ? 1 : -1;
-		
-		if(wingsRotation >= maxWingsFrames)
+		if(wingsHeight >= maxWingsFrames || wingsHeight <= 5)
 		{
 			closingWings = !closingWings;
 		}
 		
-		wings.drawImage(GraphicsUtils.rotate(Entity.SPRITE_WINGS, wingsRotation), 0, 5, 10, 8, null);
-		
-		
+		g.drawImage(SPRITE_PLAYER, getX(), getY(), null);		
+		g.drawImage(SPRITE_WINGS, getX() - 1, getY() + 5, 10, wingsHeight, null);
 	}
 	
 	public void handleDeath()

@@ -30,6 +30,7 @@ public class Game extends Canvas implements Runnable
 	public static final int HEIGHT = 264;
 	public static final int SCALE = 2;
 	public static final int TILE_SIZE = 16;
+	public static final int FLOOR_OFFSET = 26;
 	
 	private static Game game;
 	private static int FPS = 0;
