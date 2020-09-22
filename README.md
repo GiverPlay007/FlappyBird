@@ -1,2 +1,3 @@
 # FlappyBirdClone
-Flappyyyyyy
+
+Projeto prático, jogo semelhante ao Flappy Bird.

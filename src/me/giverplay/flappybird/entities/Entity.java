@@ -109,7 +109,7 @@ public class Entity
 		return Math.sqrt((x2 - x1) * (x2 - x1) + ((y2 - y1) * (y2 - y1)));
 	}
 	
-	public static boolean isCollifingPlayer(Entity e1, Player e2)
+	public static boolean isColliding(Entity e1, Player e2)
 	{
 		Rectangle e1m = new Rectangle(e1.getX(), e1.getY(), e1.getWidth(), e1.getHeight());
 		Rectangle e2m = new Rectangle(e2.getX(), e2.getY() - 2, e2.getWidth() + 2, e2.getHeight());
@@ -122,12 +122,5 @@ public class Entity
 		Game.getGame().getEntities().remove(this);
 	}
 	
-	public static Comparator<Entity> sortDepth = new Comparator<Entity>()
-	{
-		@Override
-		public int compare(Entity e0, Entity e1)
-		{
-			return (e1.getDepth() < e0.getDepth() ? +1 : e1.getDepth() > e0.getDepth() ? -1 : 0);
-		}
-	};
+	public static Comparator<Entity> sortDepth = Comparator.comparingInt(Entity::getDepth);
 }

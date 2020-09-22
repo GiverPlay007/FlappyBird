@@ -61,7 +61,7 @@ public class Game extends Canvas implements Runnable
 		return game;
 	}
 	
-	// M�todos Startup | TODO
+	// Métodos Startup
 	public Game()
 	{
 		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
@@ -107,7 +107,7 @@ public class Game extends Canvas implements Runnable
 		morreu = false;
 	}
 	
-	// Metodos de Controle do Fluxo | TODO
+	// Metodos de Controle do Fluxo
 	
 	public synchronized void start()
 	{
@@ -141,7 +141,7 @@ public class Game extends Canvas implements Runnable
 		game.restart();
 	}
 	
-	// Core | TODO
+	// Core
 	
 	@Override
 	public void run()
@@ -209,14 +209,10 @@ public class Game extends Canvas implements Runnable
 		g.setColor(new Color(Cores.SKY));
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 		
-		/** Renderiaza��o do Jogo **/
-		
 		Collections.sort(entities, Entity.sortDepth);
 		
 		for(int i = 0; i < entities.size(); i++)
 			entities.get(i).render(g);
-		
-		/******/
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
@@ -267,7 +263,7 @@ public class Game extends Canvas implements Runnable
 		g.drawString("FPS: " + FPS, 2, 12);
 	}
 	
-	// Getters e Setters | TODO
+	// Getters e Setters
 	
 	public Player getPlayer()
 	{

@@ -36,7 +36,7 @@ public class Tube extends Entity
 		
 		x -= speed;
 		
-		if(isCollifingPlayer(this, game.getPlayer()))
+		if(isColliding(this, game.getPlayer()))
 			game.getPlayer().handleDeath();
 		
 		if(getX() + getWidth() < game.getPlayer().getX() && !jaDeuPonto && cima)
