@@ -1,29 +1,17 @@
 package me.giverplay.flappybird.entities;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
-import me.giverplay.flappybird.Game;
 
 public class Tube extends Entity
 {
-	private BufferedImage sprite;
-	private BufferedImage end;
+	private final boolean up;
+	private boolean pointed = false;
 	
-	private Game game;
-	
-	private boolean cima;
-	private boolean jaDeuPonto = false;
-	
-	public Tube(int x, int y, int speed, int height, boolean cima)
+	public Tube(int x, int y, int speed, int height, boolean up)
 	{
-		super(x, y, 32, height, speed, null);
-		this.game = Game.getGame();
+		super(x, y, 32, height, speed);
 		
-		this.sprite = game.getSpritesheet().getSprite(16, 0, 16, 32);
-		this.end = game.getSpritesheet().getSprite(0, 29, 16, 3);
-		
-		this.cima = cima;
+		this.up = up;
 		
 		setDepth(0);
 	}
@@ -32,27 +20,33 @@ public class Tube extends Entity
 	public void tick()
 	{
 		if(game.getPlayer().isDead())
+		{
 			return;
+		}
 		
 		x -= speed;
 		
-		if(isColliding(this, game.getPlayer()))
-			game.getPlayer().handleDeath();
-		
-		if(getX() + getWidth() < game.getPlayer().getX() && !jaDeuPonto && cima)
+		if(isColliding(game.getPlayer()))
 		{
-			game.addScore(1);
-			jaDeuPonto = true;
+			game.getPlayer().handleDeath();
+		}
+		
+		if(getX() + getWidth() < game.getPlayer().getX() && !pointed && up)
+		{
+			game.addScore();
+			pointed = true;
 		}
 		
 		if(getX() < -getWidth())
+		{
 			destroy();
+		}
 	}
 	
 	@Override
 	public void render(Graphics g)
 	{
-		g.drawImage(sprite, getX(), getY(), getWidth(), getHeight(), null);
-		g.drawImage(end, getX(), getY() + (cima ? getHeight() - 6 : 0), getWidth(), 6, null);		
+		g.drawImage(TUBE, getX(), getY(), getWidth(), getHeight(), null);
+		g.drawImage(TUBE_GOAL, getX(), getY() + (up ? getHeight() - 6 : 0), getWidth(), 6, null);
 	}
 }

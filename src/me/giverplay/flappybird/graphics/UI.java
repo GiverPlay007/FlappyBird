@@ -15,14 +15,14 @@ import me.giverplay.flappybird.Game;
 
 public class UI
 {
-	private Game game;
+	private final Game game;
 	private BufferedImage image;
 	
 	public int x1 = 0;
 	public int x2;
 	
-	private int width;
-	private int height;
+	private final int width;
+	private final int height;
 	
 	public UI()
 	{
@@ -46,17 +46,24 @@ public class UI
 	{
 		g.setColor(Color.WHITE);
 		g.setFont(FontUtils.getFont(24, Font.BOLD));
+		
 		String score = String.valueOf(game.getScore());
-		g.drawString(score, (WIDTH * SCALE - g.getFontMetrics(g.getFont()).stringWidth(score)) / 2, 40);
+		String record = String.valueOf(game.getRecord());
+		
+		// Sim, isso está bem feio...
+		g.drawString(record, (WIDTH * SCALE - g.getFontMetrics().stringWidth(record)) / 2, 32);
+		g.drawString(score, (WIDTH * SCALE - g.getFontMetrics().stringWidth(score)) / 2, 58);
 		
 		if(!game.getPlayer().isDead())
 		{
 			x1 -= 2;
 			x2 -= 2;
+			
 			if (x1 < -width)
 			{
 				x1 = 0;
 			}
+			
 			if (x2 < 0)
 			{
 				x2 = width;

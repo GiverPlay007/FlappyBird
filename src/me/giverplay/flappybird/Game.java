@@ -9,18 +9,12 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
-
 import javax.swing.JFrame;
-
 import me.giverplay.flappybird.entities.Entity;
 import me.giverplay.flappybird.entities.Player;
-import me.giverplay.flappybird.events.Listeners;
 import me.giverplay.flappybird.graphics.FontUtils;
 import me.giverplay.flappybird.graphics.Spritesheet;
 import me.giverplay.flappybird.graphics.UI;
-import me.giverplay.flappybird.utils.Cores;
-import me.giverplay.flappybird.world.TubeGenerator;
 
 public class Game extends Canvas implements Runnable
 {
@@ -35,7 +29,7 @@ public class Game extends Canvas implements Runnable
 	private static Game game;
 	private static int FPS = 0;
 	
-	private ArrayList<Entity> entities = new ArrayList<>();
+	private final ArrayList<Entity> entities = new ArrayList<>();
 	
 	private TubeGenerator generator;
 	private Spritesheet sprite;
@@ -44,15 +38,13 @@ public class Game extends Canvas implements Runnable
 	
 	private BufferedImage image;
 	private Thread thread;
-	private JFrame frame;
 	
 	private boolean isRunning = false;
 	private boolean showGameOver = true;
-	private boolean morreu = false;
-	private boolean ganhou = false;
+	private boolean dead = false;
+	private boolean won = false;
 	
 	private int gameOverFrames = 0;
-	private int maxGameOverFrames = 30;
 	private int score = 0;
 	private int record = 0;
 	
@@ -61,24 +53,20 @@ public class Game extends Canvas implements Runnable
 		return game;
 	}
 	
-	// Métodos Startup
 	public Game()
 	{
 		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-		
 		setupFrame();
-		setupAssets();
 	}
 	
 	public static void main(String[] args)
 	{
-		Game game = new Game();
-		game.start();
+		new Game().start();
 	}
 	
 	private void setupFrame()
 	{
-		frame = new JFrame("Game 03 - Flappy Bird Clone");
+		JFrame frame = new JFrame("Game 03 - Flappy Bird Clone");
 		frame.add(this);
 		frame.setResizable(false);
 		frame.setUndecorated(false);
@@ -89,28 +77,16 @@ public class Game extends Canvas implements Runnable
 		new Listeners(this);
 	}
 	
-	private void setupAssets()
-	{
-		game = this;
-		
-		sprite = new Spritesheet("/Spritesheet.png");
-		player = new Player(WIDTH / 2 - 8, 100, 16, 16);
-		generator = new TubeGenerator(this);
-		
-		entities.add(player);
-		
-		ui = new UI();
-		
-		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_BGR);
-		
-		ganhou = false;
-		morreu = false;
-	}
-	
-	// Metodos de Controle do Fluxo
-	
 	public synchronized void start()
 	{
+		game = this;
+		sprite = new Spritesheet("/Spritesheet.png");
+		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_BGR);
+		ui = new UI();
+		record = 0;
+		
+		restart();
+		
 		isRunning = true;
 		thread = new Thread(this);
 		thread.start();
@@ -132,16 +108,20 @@ public class Game extends Canvas implements Runnable
 	public synchronized void restart()
 	{
 		entities.clear();
-		setupAssets();
+		won = false;
+		dead = false;
 		score = 0;
+		
+		generator = new TubeGenerator(this);
+		player = new Player(WIDTH / 2 - 8, 100, 16, 16);
+		
+		entities.add(player);
 	}
 	
 	public static void handleRestart()
 	{
 		game.restart();
 	}
-	
-	// Core
 	
 	@Override
 	public void run()
@@ -185,12 +165,11 @@ public class Game extends Canvas implements Runnable
 	
 	public synchronized void tick()
 	{
-		if(!morreu && !ganhou)
+		if(!dead && !won)
 		{
 			generator.tick();
 			
-			for(int i = 0; i < entities.size(); i++)
-				entities.get(i).tick();
+			for(int i = 0; i < entities.size(); i++) entities.get(i).tick();
 		}
 	}
 	
@@ -206,13 +185,15 @@ public class Game extends Canvas implements Runnable
 		
 		Graphics g = image.getGraphics();
 		
-		g.setColor(new Color(Cores.SKY));
+		g.setColor(new Color(0xFF2eccd1));
 		g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 		
-		Collections.sort(entities, Entity.sortDepth);
+		entities.sort(Entity.sortDepth);
 		
-		for(int i = 0; i < entities.size(); i++)
-			entities.get(i).render(g);
+		for(Entity entity : entities)
+		{
+			entity.render(g);
+		}
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
@@ -220,21 +201,21 @@ public class Game extends Canvas implements Runnable
 		
 		renderSmooth(g);
 		
-		if(morreu || ganhou)
+		if(dead || won)
 		{
 			Graphics2D g2 = (Graphics2D) g;
 			
 			g2.setColor(new Color(0, 0, 0, 100));
 			g2.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
 			
-			String txt = morreu ? "Game Over" : "Você Venceu!";
+			String txt = dead ? "Game Over" : "Você Venceu!";
 			g.setColor(Color.WHITE);
 			g.setFont(FontUtils.getFont(32, Font.BOLD));
 			g.drawString(txt, (WIDTH * SCALE - g.getFontMetrics(g.getFont()).stringWidth(txt)) / 2, HEIGHT * SCALE / 2);
 			
 			gameOverFrames++;
 			
-			if(gameOverFrames > maxGameOverFrames)
+			if(gameOverFrames > 30)
 			{
 				gameOverFrames = 0;
 				showGameOver = !showGameOver;
@@ -257,13 +238,10 @@ public class Game extends Canvas implements Runnable
 		g.setColor(new Color(100, 100, 100));
 		g.setFont(FontUtils.getFont(18, Font.PLAIN));
 		
-		// FPS
 		g.setColor(Color.WHITE);
 		g.setFont(FontUtils.getFont(11, Font.PLAIN));
 		g.drawString("FPS: " + FPS, 2, 12);
 	}
-	
-	// Getters e Setters
 	
 	public Player getPlayer()
 	{
@@ -280,19 +258,19 @@ public class Game extends Canvas implements Runnable
 		return this.entities;
 	}
 	
-	public boolean morreu()
+	public boolean isDead()
 	{
-		return this.morreu;
+		return this.dead;
 	}
 	
-	public boolean venceu()
+	public boolean winnowed()
 	{
-		return this.ganhou;
+		return this.won;
 	}
-
-	public void matar()
+	
+	public void kill()
 	{
-		this.morreu = true;
+		this.dead = true;
 	}
 	
 	public int getScore()
@@ -305,8 +283,13 @@ public class Game extends Canvas implements Runnable
 		return this.record;
 	}
 
-	public void addScore(int i)
+	public void addScore()
 	{
-		this.score++;
+		++score;
+		
+		if(score > record)
+		{
+			record = score;
+		}
 	}
 }

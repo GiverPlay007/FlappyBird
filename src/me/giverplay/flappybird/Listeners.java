@@ -1,13 +1,11 @@
-package me.giverplay.flappybird.events;
+package me.giverplay.flappybird;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import me.giverplay.flappybird.Game;
-
 public class Listeners implements KeyListener
 {
-	private Game game;
+	private final Game game;
 	
 	public Listeners(Game game)
 	{
@@ -18,7 +16,7 @@ public class Listeners implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent event)
 	{
-		if(!game.morreu() && !game.venceu())
+		if(!game.isDead() && !game.winnowed())
 		{
 			if(event.getKeyCode() == KeyEvent.VK_SPACE)
 			{
@@ -44,9 +42,5 @@ public class Listeners implements KeyListener
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyTyped(KeyEvent arg0)	{ }
 }

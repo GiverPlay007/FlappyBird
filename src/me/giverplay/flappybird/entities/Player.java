@@ -5,25 +5,18 @@ import java.awt.Graphics;
 import me.giverplay.flappybird.Game;
 
 public class Player extends Entity
-{	
-	private Game game;
-	
+{
 	private boolean jumping = false;
-	private boolean subindo = false;
+	private boolean goingUp = false;
 	private boolean dead = false;
 	private boolean closingWings = false;
 	
-	private int subindoFrames = 0;
-	private int maxSubindoFrames = 5;
-	private int speed = 2;
+	private int upFrames = 0;
 	private int wingsHeight = 5;
-	private int maxWingsFrames = 12;
 	
 	public Player(int x, int y, int width, int height)
 	{
-		super(x, y, width, height, 2, null);
-		game = Game.getGame();
-		
+		super(x, y, width, height, 2);
 		setDepth(2);
 	}
 	
@@ -34,20 +27,20 @@ public class Player extends Entity
 		{
 			if(jumping)
 			{
-				if(!subindo)
-					subindo = true;
+				if(!goingUp)
+					goingUp = true;
 				
-				subindoFrames = 0;
+				upFrames = 0;
 			}
 			
-			if(subindo)
+			if(goingUp)
 			{
-				subindoFrames++;
+				upFrames++;
 				
-				if(subindoFrames >= maxSubindoFrames)
+				if(upFrames >= 5)
 				{
-					subindoFrames = 0;
-					subindo = false;
+					upFrames = 0;
+					goingUp = false;
 				}
 				else
 				{
@@ -60,18 +53,20 @@ public class Player extends Entity
 				y += speed;
 				
 				if(y >= Game.HEIGHT - Game.FLOOR_OFFSET)
+				{
 					handleDeath();
+				}
 			}
 		}
 		else
 		{		
 			if(y >= Game.HEIGHT - Game.FLOOR_OFFSET || y + 4 >= Game.HEIGHT - Game.FLOOR_OFFSET)
 			{	
-				game.matar();
+				game.kill();
 				return;
 			}
 			
-			if(!game.morreu())
+			if(!game.isDead())
 				y += 4;
 		}
 	}
@@ -81,7 +76,7 @@ public class Player extends Entity
 	{
 		wingsHeight += closingWings ? -1 : 1;
 		
-		if(wingsHeight >= maxWingsFrames || wingsHeight <= 5)
+		if(wingsHeight >= 12 || wingsHeight <= 5)
 		{
 			closingWings = !closingWings;
 		}

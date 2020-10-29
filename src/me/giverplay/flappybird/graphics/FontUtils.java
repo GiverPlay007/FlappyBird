@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 public class FontUtils
 {
-	private static InputStream stream = FontUtils.class.getResourceAsStream("/Font.ttf");
+	private static final InputStream stream = FontUtils.class.getResourceAsStream("/Font.ttf");
 	private static Font font;
 	
 	static

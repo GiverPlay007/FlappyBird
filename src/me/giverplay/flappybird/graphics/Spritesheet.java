@@ -20,8 +20,8 @@ public class Spritesheet
 		}
 	}
 	
-	public BufferedImage getSprite(int x, int y, int width, int hight)
+	public BufferedImage getSprite(int x, int y, int width, int height)
 	{
-		return spritesheet.getSubimage(x, y, width, hight);
+		return spritesheet.getSubimage(x, y, width, height);
 	}
 }

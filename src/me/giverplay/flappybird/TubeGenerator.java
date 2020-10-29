@@ -1,18 +1,15 @@
-package me.giverplay.flappybird.world;
+package me.giverplay.flappybird;
 
 import java.util.Random;
-
-import me.giverplay.flappybird.Game;
 import me.giverplay.flappybird.entities.Tube;
 
 public class TubeGenerator
 {
-	private static Random random = new Random();
+	private static final Random RANDOM = new Random();
 	
-	private Game game;
+	private final Game game;
 	
 	private int time = 0;
-	private int maxTime = 90;
 	
 	public TubeGenerator(Game game)
 	{
@@ -26,11 +23,11 @@ public class TubeGenerator
 		
 		time++;
 		
-		if(time >= maxTime)
+		if(time >= 90)
 		{
 			time = 0;
 			
-			int height = random.nextInt((Game.HEIGHT - 12) / 2 - 40) + 40;
+			int height = RANDOM.nextInt((Game.HEIGHT - 12) / 2 - 40) + 40;
 			
 			game.getEntities().add(new Tube(Game.WIDTH, 0, 1, height, true));
 			game.getEntities().add(new Tube(Game.WIDTH, height + 70, 1, (Game.HEIGHT - 12) - (height + 70), false));
