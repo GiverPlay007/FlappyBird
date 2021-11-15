@@ -10,10 +10,10 @@ Vamos assumir que as variáveis JAVA_HOME e PATH estão devidamente configuradas
 
 ```bat
 # Clonamos o repositório
-git clone https://github.com/GiverPlay007/flappy-bird.git
+git clone https://github.com/GiverPlay007/FlappyBird.git
 
 # Navegamos até o projeto
-cd flappy-bird
+cd FlappyBird
 
 # Compilamos (Windows)
 gradlew build
